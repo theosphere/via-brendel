@@ -1,6 +1,2 @@
 node_modules
 dist
-
-# Purchased commercial recordings — kept local, never pushed to a public
-# repo (that would be public redistribution, not personal use).
-public/audio/*.mp3
