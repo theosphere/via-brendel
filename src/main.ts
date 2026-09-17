@@ -200,11 +200,12 @@ interface Track {
   src: string;
 }
 const TRACKS: Track[] = [
-  { title: '1', src: `${import.meta.env.BASE_URL}audio/1.mp3` },
-  { title: '2', src: `${import.meta.env.BASE_URL}audio/2.mp3` },
+  { title: 'SONATA K.310', src: `${import.meta.env.BASE_URL}audio/1.mp3` },
+  { title: 'FANTASY K.396', src: `${import.meta.env.BASE_URL}audio/2.mp3` },
 ];
 
 const player = document.getElementById('player') as HTMLAudioElement;
+player.volume = 0.5;
 let currentTrack = 0;
 let isPlaying = false;
 let panelVisible = false;
