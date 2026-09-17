@@ -15,12 +15,11 @@ const ctx = canvas.getContext('2d')!;
 ctx.imageSmoothingEnabled = false;
 
 function fit() {
-  // Fills as much of the viewport as possible at the fixed W:H aspect —
-  // same approach as night-walk's fitStage. Integer-only scaling (the
-  // previous approach) is more pixel-perfect, but on real phone screens
-  // it often lands on a scale of 1x and leaves most of the screen empty;
-  // "pixelated" image-rendering still keeps this reasonably crisp even at
-  // a fractional scale.
+  // Contain, not cover: the whole building must always stay fully in
+  // frame, never cropped at the edges — so this fits to whichever axis
+  // is more constraining and letterboxes the other, exactly like
+  // night-walk's fitStage. On phone-shaped (narrow/tall) screens that
+  // means letterbox bars top and bottom rather than side crops.
   const vw = window.innerWidth;
   const vh = window.innerHeight;
   let w = vw;
@@ -92,7 +91,6 @@ const AC_FAN_RING: RGB = [150, 146, 138];
 const AC_FAN_BG: RGB = [68, 66, 61];
 const AC_FAN_BLADE: RGB = [200, 196, 188];
 const AC_VENT_LINE: RGB = [164, 160, 151];
-const GROUND: RGB = [14, 16, 12];
 
 // --- Music player: drawn INTO the scene, not an HTML overlay ---------------
 // Everything here — cover, text, buttons — is rasterized as flat pixel
@@ -306,10 +304,10 @@ canvas.addEventListener('click', (e) => {
 
 // --- Layout: flat and frontal — no shear, no perspective -----------------
 const BUILDING_TOP = 60;
-const BUILDING_BOTTOM = 370;
+const BUILDING_BOTTOM = H; // the building runs all the way to the bottom edge — no ground/floor strip
 const MARGIN_X = 6;
 const COLS = 6;
-const ROWS = 12;
+const ROWS = 13; // one more row than before, to fill the extra height at roughly the same floor size
 const cellW = (W - MARGIN_X * 2) / COLS;
 const cellH = (BUILDING_BOTTOM - BUILDING_TOP) / ROWS;
 
@@ -617,11 +615,6 @@ function drawBuilding(time: number) {
   }
 }
 
-function drawGround() {
-  ctx.fillStyle = rgbStr(GROUND);
-  ctx.fillRect(0, BUILDING_BOTTOM, W, H - BUILDING_BOTTOM);
-}
-
 let lastTime = performance.now() / 1000;
 let simTime = 0;
 function frame() {
@@ -634,7 +627,6 @@ function frame() {
   drawSky(simTime);
   drawBuilding(simTime);
   drawWires();
-  drawGround();
   drawMusicRow();
 }
 frame();
